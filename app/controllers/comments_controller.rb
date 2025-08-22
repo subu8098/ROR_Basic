@@ -1,6 +1,8 @@
 class CommentsController < ApplicationController
+    include FindsArticle
+    before_action :set_article_from_params, only: [:create, :destroy]
   def create
-    @article = Article.find(params[:article_id])
+    #@article = Article.find(params[:article_id])
     @comment = @article.comments.build(comment_params)
 
     if @comment.save
@@ -13,7 +15,7 @@ class CommentsController < ApplicationController
   end
 
     def destroy
-    @article = Article.find(params[:article_id])
+    # @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
     @comment.destroy
     flash[:notice] = "Comment deleted"
