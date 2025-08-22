@@ -27,6 +27,7 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
+    @comments = @article.comments
   end
 
   def new
@@ -46,6 +47,7 @@ class ArticlesController < ApplicationController
 
   def edit
     @article = Article.find(params[:id])
+   
   end
 
   def update

@@ -9,7 +9,13 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
+  <% if flash[:notice] %>
+  <p style="color: green;"><%= flash[:notice] %></p>
+  <%end%>
 
+  <% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+  <%end%> 
   <body>
     <header>
     <h1>Welcome to My Site!</h1>
@@ -27,11 +33,5 @@
   </footer>
 
   </body>
-  <% if flash[:notice] %>
-  <p style="color: green;"><%= flash[:notice] %></p>
-  <%end%>
-
-  <% if flash[:alert] %>
-  <p style="color: red;"><%= flash[:alert] %></p>
-  <%end%>
+  
 </html>
