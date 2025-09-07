@@ -1,0 +1,6 @@
+<h1>404 - Not Found</h1>
+<p>The page you requested does not exist.</p>
+<%= link_to 'Back to Home', root_path %>
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>

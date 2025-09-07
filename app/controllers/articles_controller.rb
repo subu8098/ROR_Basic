@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class ArticlesController < ApplicationController
   # def index
   #   # For now, hardcoded data
@@ -25,10 +27,22 @@ class ArticlesController < ApplicationController
     @articles = Article.all
   end
 
+  # def show
+    
+  #   @article = Article.find(params[:id])
+  #   @comments = @article.comments
+  # end
+  
   def show
-    @article = Article.find(params[:id])
-    @comments = @article.comments
+  firebase_url = "https://dev123-25ae5.web.app/articles/#{params[:id]}/show.html"
+  begin
+    html = URI.open(firebase_url).read
+    render html: html.html_safe, layout: false
+  rescue OpenURI::HTTPError
+    render html: "<h1>Article Not Found</h1>".html_safe, status: :not_found
   end
+end
+
 
   def new
     @article = Article.new
@@ -37,7 +51,7 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(article_params)
     if @article.save
-      flash[:notice] = "Article created successfully"
+      flash[:notice] = "Article created successfully"     # flash logic is wrote in view/application.html.erb
       redirect_to @article
     else
       flash[:alert] = "Error creating article"

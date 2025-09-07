@@ -1,6 +1,10 @@
 
   <p>
     <%# due to convention of ror here the comment is the every comment object of each row one by one %>
+
+    <%# comment helper %>
+    <p><strong>Comments:</strong> <%= comments_count(@article) %></p>
+
     <strong><%= comment.commenter %>:</strong>   
     <%= comment.body %>
 
