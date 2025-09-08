@@ -27,21 +27,44 @@ class ArticlesController < ApplicationController
     @articles = Article.all
   end
 
-  # def show
-    
-  #   @article = Article.find(params[:id])
-  #   @comments = @article.comments
-  # end
-  
-  def show
-  firebase_url = "https://dev123-25ae5.web.app/articles/#{params[:id]}/show.html"
+ def show
+  @article = Article.find(params[:id])
+
+  # If special cloud flag is sent, fetch HTML from Firebase
+  if params[:cloud] == 'true'
+    firebase_url = "https://dev123-25ae5.web.app/articles/#{@article.id}/show.html"
+    begin
+      html = URI.open(firebase_url).read
+      render html: html.html_safe, layout: false
+    rescue
+      render plain: "Cloud content not found", status: :not_found
+    end
+  end
+end
+
+# to manage the AJAX call for dynamic content loading
+def cloud_html
+  article_id = params[:id]
+  firebase_url = "https://dev123-25ae5.web.app/articles/#{article_id}/show.html"
   begin
     html = URI.open(firebase_url).read
     render html: html.html_safe, layout: false
-  rescue OpenURI::HTTPError
-    render html: "<h1>Article Not Found</h1>".html_safe, status: :not_found
+  rescue
+    render plain: "Cloud content not found", status: :not_found
   end
 end
+
+  
+#   to show the page dynamic directlu
+#   def show
+#   firebase_url = "https://dev123-25ae5.web.app/articles/#{params[:id]}/show.html"
+#   begin
+#     html = URI.open(firebase_url).read
+#     render html: html.html_safe, layout: false
+#   rescue OpenURI::HTTPError
+#     render html: "<h1>Article Not Found</h1>".html_safe, status: :not_found
+#   end
+# end
 
 
   def new

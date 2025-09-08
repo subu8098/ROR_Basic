@@ -1,36 +1,61 @@
+<div id="article-content">
+  <% if params[:version] == 'v2' %>
+    <%= render 'article_v2', article: @article %>
+  <% elsif params[:version] == 'v1' %>
+    <%= render 'article_v1', article: @article %>
+  <% else %>
+    <%# using application helper %>
+    <p><strong>Published At:</strong> <%= formatted_time(@article.created_at) %></p>
+    <p><strong>Title:</strong> <%= truncate_text(@article.title, 30) %></p>
+
+    <h1><%= @article.title %></h1>
+    <p><%= @article.body %></p>
+
+    <%= link_to "Edit", edit_article_path(@article) %> |
+    <%= link_to "Back", articles_path %> |
+    <%= button_to "Delete", article_path(@article), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } } %>
+  <% end %>
+  
+        <h2>Comments</h2>
+        <%# 
+        <%= render @article.comments %> %>
 
 
-<% if params[:version] == 'v2' %>
-  <%= render 'article_v2', article: @article %>
-<% elsif params[:version] == 'v1' %>
-  <%= render 'article_v1', article: @article %>
+        <button id="toggle-comments-btn">Hide Comments</button>
 
-<%else%>
+        <div id="comments-section">
+          <%= render @article.comments %>
+        </div>
 
-<%# using application helper %>
-<p><strong>Published At:</strong> <%= formatted_time(@article.created_at) %></p>
-<p><strong>Title:</strong> <%= truncate_text(@article.title, 30) %></p>
+        <h3>Add a comment:</h3>
 
-<h1><%= @article.title %></h1>
-<p><%= @article.body %></p>
-
-<%= link_to "Edit", edit_article_path(@article) %> |
-<%= link_to "Back", articles_path %> |
-<%= button_to "Delete", article_path(@article), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } } %>
-
-<h2>Comments</h2>
-<%# 
-<%= render @article.comments %> %>
-
-
-<button id="toggle-comments-btn">Hide Comments</button>
-
-<div id="comments-section">
-  <%= render @article.comments %>
+        <%= render "comments/form"%>
 </div>
 
-<h3>Add a comment:</h3>
 
-<%= render "comments/form"%>
 
-<% end %>
+
+<%# THIS make a new request call and page navigation %>
+
+<%# <script>
+  setTimeout(function() {
+    // After 5s, reload with cloud parameter
+    window.location.search = '?cloud=true';
+  }, 5000);
+</script> %>
+
+<%# to manage the AJAX call for dynamic content loading %>
+<script>
+  setTimeout(function() {
+    var articleId = "<%= @article.id %>";
+    var cloudUrl = "/articles/" + articleId + "/cloud_html";
+    fetch(cloudUrl)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('article-content').innerHTML = data;
+      })
+      .catch(error => {
+        console.error("Cloud HTML fetch failed!", error);
+      });
+  }, 5000);
+</script>
